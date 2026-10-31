@@ -1,0 +1,32 @@
+services:
+  redis:
+    image: redis:7.4-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  grobid:
+    image: grobid/grobid:0.9.1-crf
+
+  celery:
+    build:
+      context: ..
+      dockerfile: docker/worker.Dockerfile
+    command: celery -A paperlm.celery_app worker --loglevel=INFO
+    environment:
+      S3_BUCKET: paperlm-papers
+      REDIS_URL: redis://redis:6379/0
+      GROBID_URL: http://grobid:8070
+      S3_ENDPOINT_URL: http://host.docker.internal:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      redis:
+        condition: service_healthy
+      grobid:
+        condition: service_started
