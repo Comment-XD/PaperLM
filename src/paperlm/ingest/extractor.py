@@ -18,12 +18,19 @@ def arxiv_extractor(arxiv_paper_ids_path, sample: int = 1):
             arxiv_id = line.strip()
             if not arxiv_id:
                 continue
-            
-            print(f"Reading Arxiv Paper: {line}")
-            response = requests.get(f"https://arxiv.org/pdf/{arxiv_id}.pdf")
-            response.raise_for_status()
 
-            upload_bytes(f"raw/{arxiv_id}.pdf", response.content)
+            try:
+                print(f"Reading Arxiv Paper: {arxiv_id}")
+                response = requests.get(
+                    f"https://arxiv.org/pdf/{arxiv_id}.pdf",
+                    timeout=60,
+                )
+                response.raise_for_status()
 
-            time.sleep(3)
-            
+                upload_bytes(f"raw/{arxiv_id}.pdf", response.content)
+            except requests.RequestException as error:
+                print(f"Failed to download {arxiv_id}: {error}")
+            except Exception as error:
+                print(f"Failed to upload {arxiv_id}: {error}")
+            finally:
+                time.sleep(3)
