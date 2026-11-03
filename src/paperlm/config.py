@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     s3_endpoint_url: str | None = None
     raw_prefix: str = "raw/papers/"
     extracted_prefix: str = "extracted/"
+    transformed_prefix: str = "transformed/"
 
     # GROBID
     grobid_url: str = "http://grobid:8070"

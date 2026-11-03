@@ -3,7 +3,7 @@
 import requests
 
 from paperlm.celery_app import app
-from paperlm.pipeline import process_paper_pdf
+from paperlm.pipeline import process_paper_pdf, process_paper_tei
 
 
 @app.task(
