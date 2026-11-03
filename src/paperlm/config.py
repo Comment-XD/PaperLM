@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     # S3 storage
     s3_bucket: str
     s3_endpoint_url: str | None = None
-    raw_prefix: str = "raw/papers/"
+    raw_prefix: str = "raw/"
     extracted_prefix: str = "extracted/"
     transformed_prefix: str = "transformed/"
 

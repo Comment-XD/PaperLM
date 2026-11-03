@@ -1,9 +1,3 @@
-"""Turn GROBID TEI XML into clean reading text plus a quality row.
-
-The TEI comes from an untrusted PDF, so parsing runs with entity resolution
-and network/DTD loading disabled to avoid XXE and entity-expansion attacks.
-"""
-
 import re
 import unicodedata
 
