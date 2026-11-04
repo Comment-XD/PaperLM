@@ -27,7 +27,7 @@ def test_defaults_apply(monkeypatch):
     assert settings.redis_url == "redis://redis:6379/0"
     assert settings.visibility_timeout_seconds == 3600
     assert settings.s3_endpoint_url is None
-    assert settings.raw_prefix == "raw/papers/"
+    assert settings.raw_prefix == "raw/"
     assert settings.extracted_prefix == "extracted/"
     assert settings.grobid_url == "http://grobid:8070"
     assert settings.grobid_timeout_seconds == 300
