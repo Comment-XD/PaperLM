@@ -10,13 +10,38 @@ dependencies = [
     "requests>=2.31.0",
     "pydantic-settings>=2.2.0",
     "lxml>=6.1.3",
+    "sqlalchemy>=2.0.30",
+    "psycopg[binary]>=3.2.0",
+    "tiktoken>=0.8.0",
+    "numpy>=2.1.0",
+]
+
+[project.optional-dependencies]
+# HuggingFace tokenizer backend (tokenizer_backend="hf"); heavy, opt-in.
+hf = [
+    "transformers>=4.44.0",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.0.0",
 ]
+# Dashboard app deps, kept out of the worker image (not in default-groups).
+dashboard = [
+    "dash>=2.18.0",
+    "plotly>=5.24.0",
+    "pandas>=2.2.0",
+    "gunicorn>=23.0.0",
+]
 
 [build-system]
 requires = ["uv_build>=0.13.1,<0.14.0"]
 build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+# Integration tests need live services (Postgres); excluded by default.
+# Run them with: uv run pytest -m integration
+addopts = "-m 'not integration'"
+markers = [
+    "integration: tests that require live services (Postgres, S3, GROBID)",
+]

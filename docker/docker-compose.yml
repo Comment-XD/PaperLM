@@ -10,6 +10,20 @@ services:
   grobid:
     image: grobid/grobid:0.9.1-crf
 
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: paperlm
+      POSTGRES_PASSWORD: paperlm
+      POSTGRES_DB: paperlm
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paperlm"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   celery:
     build:
       context: ..
@@ -20,8 +34,28 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379/0
       - GROBID_URL=http://grobid:8070
+      - DATABASE_URL=postgresql+psycopg://paperlm:paperlm@postgres:5432/paperlm
     depends_on:
       redis:
         condition: service_healthy
       grobid:
         condition: service_started
+      postgres:
+        condition: service_healthy
+
+  dashboard:
+    build:
+      context: ..
+      dockerfile: docker/dashboard.Dockerfile
+    ports:
+      - "8050:8050"
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://paperlm:paperlm@postgres:5432/paperlm
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
